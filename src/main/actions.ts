@@ -1,16 +1,15 @@
-import { v4 } from 'uuid'
-import path from 'path'
 import { spawn } from 'child_process'
-import { updatePages } from '../reducers/session'
-import { PageInfo, Dict, AppInfo } from '../types'
-import fetch from 'node-fetch'
-import { addSession, updateLog, removeSession } from '../reducers/session'
-import { State } from '../reducers'
 import { dialog } from 'electron'
 import getPort from 'get-port'
+import fetch from 'node-fetch'
+import path from 'path'
 import { ThunkAction } from 'redux-thunk'
+import { v4 } from 'uuid'
+import { State } from '../reducers'
+import { getAppStart, getApps } from '../reducers/app'
+import { addSession, removeSession, updateLog, updatePages } from '../reducers/session'
+import { AppInfo, Dict, PageInfo } from '../types'
 import { Adapter } from './adapter'
-import { getApps, getAppStart } from '../reducers/app'
 
 export const fetchPages =
   (): ThunkAction<any, State, any, any> => async (dispatch, getState) => {
@@ -50,7 +49,7 @@ export const startDebugging =
 
     const sp = spawn(
       app.exePath,
-      [`--inspect=${nodePort}`, `--remote-debugging-port=${windowPort}`],
+      [`--inspect-brk=${nodePort}`, `--remote-debugging-port=${windowPort}`],
       {
         cwd: process.platform === 'win32' ? path.dirname(app.exePath) : '/',
       }
